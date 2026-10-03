@@ -35,16 +35,11 @@ object ImageUtils {
      * adds any media-type prefix.
      */
     fun fileToBase64(file: File): String {
-        // TODO-5: today, read through the answer below and understand the shape
-        // (decode -> downscale -> compress JPEG -> Base64 with NO_WRAP) rather than
-        // deriving it from scratch.
-        //
-        // val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-        // val scaled = downscale(bitmap, MAX_EDGE)          // 1024 px
-        // val out = ByteArrayOutputStream()
-        // scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
-        // return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
-        return ""
+        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+        val scaled = downscale(bitmap, MAX_EDGE)
+        val out = ByteArrayOutputStream()
+        scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, out)
+        return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
     }
 
     /** Keeps the aspect ratio. Given for free — the interesting part is above. */

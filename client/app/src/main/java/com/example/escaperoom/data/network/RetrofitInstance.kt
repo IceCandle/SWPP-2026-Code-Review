@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitInstance {
 
     // TODO-1: replace with your own IP. Keep exactly one trailing slash.
-    private const val BASE_URL = "http://XXX.XXX.XXX.XXX:8000/"
+    private const val BASE_URL = "http://127.0.0.1:8000/"
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BASIC   // BODY prints 180 KB of base64
@@ -30,7 +30,7 @@ object RetrofitInstance {
     private val client = OkHttpClient.Builder()
         .addInterceptor(logging)
         .connectTimeout(10, TimeUnit.SECONDS)
-        // TODO-1: configure a read timeout long enough for one model turn.
+        .readTimeout(60, TimeUnit.SECONDS)
         .build()
 
     val api: ApiService by lazy {

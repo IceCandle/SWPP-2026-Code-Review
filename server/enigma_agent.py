@@ -76,7 +76,12 @@ def build_agent():
     most six model calls and end the turn cleanly when that budget is exhausted. Do not
     add tools or put session secrets into the prompt.
     """
-    raise NotImplementedError("TODO-2")
+    return create_agent(
+        model=ChatGoogleGenerativeAI(model=MODEL),
+        tools=TOOLS,
+        system_prompt=SYSTEM_PROMPT,
+        middleware=[ModelCallLimitMiddleware(thread_limit=6, exit_behavior="end")],
+    )
 
 
 # ------------------------------------------------------------------- TODO-3
@@ -88,9 +93,24 @@ def take_turn(session_id: str, player_text: str,
     ``scan_shape`` for this turn but must never enter the agent messages or transcript.
     Record exactly one turn, including the ordered tool trajectory, and return the reply,
     trajectory and camera-use flag. Unknown session ids fail before invoking a model.
-    
     """
-    raise NotImplementedError("TODO-3")
+    session = get(session_id)
+    if session is None:
+        return {"error": "no such session"}
+
+    session["pending_image"] = image_base64
+
+    suffix = "  [the player is holding something up to the camera]" if image_base64 else ""
+    out = build_agent().invoke({"messages": [
+        ("user", f"[session_id={session_id}] {player_text}{suffix}")
+    ]})
+
+    tools_called = [c["name"] for m in out["messages"]
+                    if isinstance(m, AIMessage) for c in (m.tool_calls or [])]
+    reply = out["messages"][-1].text
+
+    record_turn(session, player_text, reply, bool(image_base64), tools_called)
+    return {"reply": reply, "tools_called": tools_called, "had_image": bool(image_base64)}
 
 
 if __name__ == "__main__":
