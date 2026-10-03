@@ -16,22 +16,23 @@ import java.util.concurrent.TimeUnit
  * Cleartext HTTP is already allowed: AndroidManifest sets usesCleartextTraffic="true".
  */
 object RetrofitInstance {
-
     // TODO-1: replace with your own IP. Keep exactly one trailing slash.
     private const val BASE_URL = "http://127.0.0.1:8000/"
 
-    private val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BASIC   // BODY prints 180 KB of base64
-    }
+    private val logging =
+        HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BASIC // BODY prints 180 KB of base64
+        }
 
     // TODO-1, the half everyone forgets. One model response often takes 2-5 seconds.
     // A turn can include multiple model, tool, and vision round trips, so its total can
     // exceed OkHttp's default 10-second read timeout and look like a network bug.
-    private val client = OkHttpClient.Builder()
-        .addInterceptor(logging)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .build()
+    private val client =
+        OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .build()
 
     val api: ApiService by lazy {
         Retrofit.Builder()

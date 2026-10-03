@@ -15,11 +15,12 @@ import androidx.core.view.WindowInsetsCompat
  */
 fun View.padForSystemBars(extra: Int = 0) {
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, windowInsets ->
-        val i = windowInsets.getInsets(
-            WindowInsetsCompat.Type.systemBars()
-                or WindowInsetsCompat.Type.displayCutout()
-                or WindowInsetsCompat.Type.ime()
-        )
+        val i =
+            windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                    or WindowInsetsCompat.Type.displayCutout()
+                    or WindowInsetsCompat.Type.ime(),
+            )
         v.setPadding(i.left + extra, i.top + extra, i.right + extra, i.bottom + extra)
         WindowInsetsCompat.CONSUMED
     }

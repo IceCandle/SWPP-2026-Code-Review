@@ -27,7 +27,6 @@ import com.example.escaperoom.util.padForSystemBars
  * boundaries be tested separately.
  */
 class MainActivity : AppCompatActivity() {
-
     private lateinit var adapter: TranscriptAdapter
 
     private val viewModel: GameViewModel by viewModels {
@@ -35,26 +34,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** CameraActivity returns the encoded photo; we send it with the next line. */
-    private val cameraLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val b64 = result.data?.getStringExtra("image_base64")
-            if (b64.isNullOrEmpty()) {
-                Toast.makeText(this, "The camera returned nothing — is TODO-5 done?",
-                    Toast.LENGTH_LONG).show()
-            } else {
-                viewModel.say("I am holding it up to the camera.", b64)
+    private val cameraLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val b64 = result.data?.getStringExtra("image_base64")
+                if (b64.isNullOrEmpty()) {
+                    Toast.makeText(
+                        this,
+                        "The camera returned nothing — is TODO-5 done?",
+                        Toast.LENGTH_LONG,
+                    ).show()
+                } else {
+                    viewModel.say("I am holding it up to the camera.", b64)
+                }
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // 16dp of our own padding on top of whatever the system is covering.
         findViewById<View>(R.id.root).padForSystemBars(
-            (16 * resources.displayMetrics.density).toInt()
+            (16 * resources.displayMetrics.density).toInt(),
         )
 
         val recycler = findViewById<RecyclerView>(R.id.recyclerTranscript)
@@ -93,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.thinking.observe(this) { thinking ->
             spinner.visibility = if (thinking) View.VISIBLE else View.GONE
             btnSend.isEnabled = !thinking
-            btnCamera.isEnabled = !thinking          // two taps, two coroutines
+            btnCamera.isEnabled = !thinking // two taps, two coroutines
         }
 
         viewModel.state.observe(this) { s ->
@@ -104,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 val pressed = if (s.entered.isEmpty()) "—" else s.entered.joinToString("")
                 status.text = "$pressed  ·  ${s.digits_remaining} keys left  ·  " +
-                        "${s.turns_left} turns"
+                    "${s.turns_left} turns"
                 status.setTextColor(ContextCompat.getColor(this, R.color.muted))
             }
         }

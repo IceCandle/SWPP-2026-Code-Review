@@ -16,12 +16,12 @@ data class SessionState(
     val entered: List<Int>,
     val digits_remaining: Int,
     val attempts: Int,
-    val escaped: Boolean
+    val escaped: Boolean,
 )
 
 /** One line of the transcript. */
 data class Line(
     val speaker: String,
     val text: String,
-    val hadPhoto: Boolean = false
+    val hadPhoto: Boolean = false,
 )

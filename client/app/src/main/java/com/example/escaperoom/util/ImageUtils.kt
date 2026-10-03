@@ -22,7 +22,6 @@ import kotlin.math.max
  * a polygon, not reading fine print.
  */
 object ImageUtils {
-
     private const val MAX_EDGE = 1024
     private const val JPEG_QUALITY = 80
 
@@ -43,12 +42,18 @@ object ImageUtils {
     }
 
     /** Keeps the aspect ratio. Given for free — the interesting part is above. */
-    fun downscale(src: Bitmap, maxEdge: Int = MAX_EDGE): Bitmap {
+    fun downscale(
+        src: Bitmap,
+        maxEdge: Int = MAX_EDGE,
+    ): Bitmap {
         val longest = max(src.width, src.height)
         if (longest <= maxEdge) return src
         val ratio = maxEdge.toFloat() / longest
         return Bitmap.createScaledBitmap(
-            src, (src.width * ratio).toInt(), (src.height * ratio).toInt(), true
+            src,
+            (src.width * ratio).toInt(),
+            (src.height * ratio).toInt(),
+            true,
         )
     }
 

@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
  * when the server cannot be reached.
  */
 class GameViewModel(private val repository: GameRepository) : ViewModel() {
-
     private val _state = MutableLiveData<SessionState>()
     val state: LiveData<SessionState> = _state
 
@@ -47,9 +46,9 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
             } catch (e: Exception) {
                 Log.e("GameViewModel", "createSession failed", e)
                 _error.value = "Could not reach the server.\n\n" +
-                        "1. is it running?   python manage.py runserver 0.0.0.0:8000\n" +
-                        "2. is BASE_URL your machine's LAN IP, not 127.0.0.1?\n" +
-                        "3. same Wi-Fi?"
+                    "1. is it running?   python manage.py runserver 0.0.0.0:8000\n" +
+                    "2. is BASE_URL your machine's LAN IP, not 127.0.0.1?\n" +
+                    "3. same Wi-Fi?"
             }
         }
     }
@@ -63,7 +62,10 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
      * the returned session state. Network failures must be logged and shown through
      * `error`, and no failure may leave the thinking indicator stuck on.
      */
-    fun say(text: String, imageBase64: String? = null) {
+    fun say(
+        text: String,
+        imageBase64: String? = null,
+    ) {
         val sessionId = _state.value?.session_id ?: return
         viewModelScope.launch {
             append(Line("you", text, imageBase64 != null))

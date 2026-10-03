@@ -16,26 +16,27 @@ import retrofit2.http.Path
  */
 data class SayRequest(
     val text: String,
-    val image_base64: String? = null
+    val image_base64: String? = null,
 )
 
 data class SayResponse(
     val reply: String,
     val state: SessionState,
-    val used_camera: Boolean
+    val used_camera: Boolean,
 )
 
 interface ApiService {
-
     @POST("escape/sessions/")
     suspend fun createSession(): SessionState
 
     @GET("escape/sessions/{id}/")
-    suspend fun getState(@Path("id") sessionId: String): SessionState
+    suspend fun getState(
+        @Path("id") sessionId: String,
+    ): SessionState
 
     @POST("escape/sessions/{id}/say/")
     suspend fun say(
         @Path("id") sessionId: String,
-        @Body request: SayRequest
+        @Body request: SayRequest,
     ): SayResponse
 }

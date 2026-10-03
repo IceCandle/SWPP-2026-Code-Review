@@ -10,10 +10,11 @@ import com.example.escaperoom.data.network.SayResponse
  * the ViewModel calls this repository.
  */
 class GameRepository {
+    suspend fun createSession(): SessionState = RetrofitInstance.api.createSession()
 
-    suspend fun createSession(): SessionState =
-        RetrofitInstance.api.createSession()
-
-    suspend fun say(sessionId: String, text: String, imageBase64: String?): SayResponse =
-        RetrofitInstance.api.say(sessionId, SayRequest(text, imageBase64))
+    suspend fun say(
+        sessionId: String,
+        text: String,
+        imageBase64: String?,
+    ): SayResponse = RetrofitInstance.api.say(sessionId, SayRequest(text, imageBase64))
 }

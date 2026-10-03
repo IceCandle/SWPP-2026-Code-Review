@@ -30,7 +30,6 @@ import java.io.File
  * MainActivity gives it to the ViewModel, and the ViewModel talks to the server.
  */
 class CameraActivity : AppCompatActivity() {
-
     private lateinit var previewView: PreviewView
     private lateinit var capturedImage: ImageView
     private var imageCapture: ImageCapture? = null
@@ -48,10 +47,10 @@ class CameraActivity : AppCompatActivity() {
         capturedImage = findViewById(R.id.capturedImage)
         // Only the button rows dodge the cutout; the preview stays full-bleed.
         findViewById<android.view.View>(R.id.topButtons).padForSystemBars(
-            (16 * resources.displayMetrics.density).toInt()
+            (16 * resources.displayMetrics.density).toInt(),
         )
         findViewById<android.view.View>(R.id.bottomButtons).padForSystemBars(
-            (16 * resources.displayMetrics.density).toInt()
+            (16 * resources.displayMetrics.density).toInt(),
         )
         val btnCapture = findViewById<Button>(R.id.btnCapture)
         val btnUse = findViewById<Button>(R.id.btnUsePhoto)
@@ -70,8 +69,11 @@ class CameraActivity : AppCompatActivity() {
         btnCapture.setOnClickListener {
             val capture = imageCapture
             if (capture == null) {
-                Toast.makeText(this, "No camera bound yet — is TODO-4 done?",
-                    Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "No camera bound yet — is TODO-4 done?",
+                    Toast.LENGTH_LONG,
+                ).show()
                 return@setOnClickListener
             }
             val photoFile = File(externalCacheDir, "shape_${System.currentTimeMillis()}.jpg")
@@ -82,7 +84,7 @@ class CameraActivity : AppCompatActivity() {
                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                         capturedFile = photoFile
                         capturedImage.setImageURI(
-                            output.savedUri ?: android.net.Uri.fromFile(photoFile)
+                            output.savedUri ?: android.net.Uri.fromFile(photoFile),
                         )
                         capturedImage.visibility = ImageView.VISIBLE
                         previewView.visibility = PreviewView.GONE
@@ -93,10 +95,13 @@ class CameraActivity : AppCompatActivity() {
                     }
 
                     override fun onError(exc: ImageCaptureException) {
-                        Toast.makeText(applicationContext,
-                            "Capture failed: ${exc.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "Capture failed: ${exc.message}",
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     }
-                }
+                },
             )
         }
 
@@ -113,15 +118,19 @@ class CameraActivity : AppCompatActivity() {
         // Encode here, send nowhere. Seam 2 stays intact.
         btnUse.setOnClickListener {
             val file = capturedFile ?: return@setOnClickListener
-            val b64 = ImageUtils.fileToBase64(file)            // TODO-5 lives here
+            val b64 = ImageUtils.fileToBase64(file) // TODO-5 lives here
             android.util.Log.d("CameraActivity", "payload ${ImageUtils.sizeKb(b64)} KB")
             setResult(RESULT_OK, intent.putExtra("image_base64", b64))
             finish()
         }
 
         btnSwitch.setOnClickListener {
-            lensFacing = if (lensFacing == CameraSelector.LENS_FACING_BACK)
-                CameraSelector.LENS_FACING_FRONT else CameraSelector.LENS_FACING_BACK
+            lensFacing =
+                if (lensFacing == CameraSelector.LENS_FACING_BACK) {
+                    CameraSelector.LENS_FACING_FRONT
+                } else {
+                    CameraSelector.LENS_FACING_BACK
+                }
             startCamera()
         }
 
@@ -143,19 +152,23 @@ class CameraActivity : AppCompatActivity() {
         val future = ProcessCameraProvider.getInstance(this)
         future.addListener({
             val provider = future.get()
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
+            val preview =
+                Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
             imageCapture = ImageCapture.Builder().build()
-            val selector = CameraSelector.Builder()
-                .requireLensFacing(lensFacing).build()
+            val selector =
+                CameraSelector.Builder()
+                    .requireLensFacing(lensFacing).build()
             provider.unbindAll()
             provider.bindToLifecycle(this, selector, preview, imageCapture)
         }, ContextCompat.getMainExecutor(this))
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1000 &&

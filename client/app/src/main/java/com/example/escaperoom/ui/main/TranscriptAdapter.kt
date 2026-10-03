@@ -12,9 +12,8 @@ import com.example.escaperoom.data.model.Line
 
 /** Renders one line of dialogue per row. */
 class TranscriptAdapter(
-    private var items: List<Line>
+    private var items: List<Line>,
 ) : RecyclerView.Adapter<TranscriptAdapter.LineViewHolder>() {
-
     class LineViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val speaker: TextView = view.findViewById(R.id.tvSpeaker)
         private val text: TextView = view.findViewById(R.id.tvText)
@@ -27,23 +26,29 @@ class TranscriptAdapter(
 
             speaker.text = if (line.hadPhoto) "${line.speaker} · photo" else line.speaker
             speaker.setTextColor(
-                ContextCompat.getColor(ctx, if (isEnigma) R.color.primary else R.color.muted)
+                ContextCompat.getColor(ctx, if (isEnigma) R.color.primary else R.color.muted),
             )
             text.setTextColor(
-                ContextCompat.getColor(ctx, if (isEnigma) R.color.ink else R.color.body)
+                ContextCompat.getColor(ctx, if (isEnigma) R.color.ink else R.color.body),
             )
             text.text = line.text
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LineViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_line, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): LineViewHolder {
+        val view =
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_line, parent, false)
         return LineViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: LineViewHolder, position: Int) =
-        holder.bind(items[position])
+    override fun onBindViewHolder(
+        holder: LineViewHolder,
+        position: Int,
+    ) = holder.bind(items[position])
 
     override fun getItemCount(): Int = items.size
 
